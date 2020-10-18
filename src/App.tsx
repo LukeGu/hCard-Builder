@@ -1,4 +1,5 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { Helmet } from 'react-helmet';
 import { Builder, Card } from './components';
 import './App.css';
 import { DetailsInterface } from './components/types';
@@ -46,6 +47,10 @@ function App() {
 
   return (
     <div className='app-wrapper'>
+      <Helmet>
+        <meta charSet='utf-8' />
+        <title>hCard Builder</title>
+      </Helmet>
       <Card details={details} />
       <Builder
         details={details}
