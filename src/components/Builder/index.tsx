@@ -24,7 +24,7 @@ function Builder({
   details: DetailsType;
   onUpdate: (e: ChangeEvent) => void;
   onUpload: (type: string, value: string) => void;
-  onSubmit: (e: FormEvent) => void;
+  onSubmit: (e: FormEvent, canSubmit: boolean) => void;
 }) {
   const [errMsg, setErrMsg] = useState<string>('');
   const [validation, setValidation] = useState<ValidationType>(
@@ -59,7 +59,7 @@ function Builder({
   };
 
   const handleSubmit = (e: FormEvent) => {
-    let tmpValid = {};
+    let tmpValid: ValidationType = {};
     Object.keys(details).forEach((key) => {
       const curValid = validation[key as keyof DetailsType];
       if (curValid) {
@@ -74,7 +74,15 @@ function Builder({
       }
     });
     setValidation(tmpValid);
-    onSubmit(e);
+    console.log('tmpValid', tmpValid);
+    let canSubmit: boolean = true;
+    Object.keys(tmpValid).forEach((key) => {
+      const curValue = tmpValid[key as keyof ValidationType];
+      console.log(curValue?.checked.isValid);
+      if (!curValue?.checked.isValid) canSubmit = false;
+    });
+    console.log(canSubmit);
+    onSubmit(e, canSubmit);
   };
 
   return (
@@ -151,6 +159,7 @@ function Builder({
             name='suite'
             type='string'
             value={details.suite}
+            validation={validation.suite}
             onChange={onUpdate}
           />
           <FormInput
@@ -159,6 +168,7 @@ function Builder({
             name='street'
             type='string'
             value={details.street}
+            validation={validation.street}
             onChange={onUpdate}
           />
           <FormInput
@@ -176,6 +186,7 @@ function Builder({
             name='country'
             type='string'
             value={details.country}
+            validation={validation.country}
             onChange={onUpdate}
           />
           <Button type='submit' bgColor='#224275' color='#fff' width='100%'>
