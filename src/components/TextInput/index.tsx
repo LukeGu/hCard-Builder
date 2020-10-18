@@ -11,7 +11,6 @@ const StyledInput = styled.input<InputProps>`
   background-color: #fff;
   color: #343434;
   border: 1px solid #224275;
-  /* width: 10rem; */
   opacity: 0.7;
   height: 2.5rem;
   padding: 0 0.8rem;

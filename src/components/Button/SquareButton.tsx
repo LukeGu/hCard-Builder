@@ -25,7 +25,7 @@ const StyledButton = styled.button<ButtonProps>`
   text-decoration: none;
   font-family: 'Exo 2', sans-serif;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.8rem;
   display: inline-block;
   position: relative;
   text-align: center;
@@ -34,7 +34,7 @@ const StyledButton = styled.button<ButtonProps>`
   color: ${(props) => props.color || '#224275'};
   border: ${(props) => `1px solid ${props.color || '#224275'}`};
   border-radius: 0.2rem;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem;
   box-shadow: 0 0 0 0 transparent;
   transition: all 0.2s ease-in;
   &:hover {

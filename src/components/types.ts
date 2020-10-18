@@ -1,20 +1,25 @@
-export interface DetailsInterface {
-  firstname: string;
-  lastname: string;
-  email: string;
-  phone: string;
-  suite: string;
-  street: string;
-  stateNpostcode: string;
-  country: string;
-  avatar: string;
-  coverImg: string;
+enum PropertyName {
+  firstname = 'firstname',
+  lastname = 'lastname',
+  email = 'email',
+  phone = 'phone',
+  suite = 'suite',
+  street = 'street',
+  stateNpostcode = 'stateNpostcode',
+  country = 'country',
+  avatar = 'avatar',
+  coverImg = 'coverImg',
 }
+
+export type DetailsType = {
+  [key in PropertyName]: string;
+};
 
 export interface ValidationConditionInterface {
   required?: boolean;
   isEmail?: boolean;
   isNumeric?: boolean;
+  isStateNPostcode?: boolean;
 }
 export interface ValidationInterface {
   condition: ValidationConditionInterface;
@@ -24,17 +29,6 @@ export interface ValidationInterface {
   };
 }
 
-export interface ValidInterface {
-  [key: string]: DetailsInterface;
-  // [key: string]: DetailsInterface;
-  // firstname?: ValidationInterface;
-  // lastname?: ValidationInterface;
-  // email?: ValidationInterface;
-  // phone?: ValidationInterface;
-  // suite?: ValidationInterface;
-  // street?: ValidationInterface;
-  // stateNpostcode?: ValidationInterface;
-  // country?: ValidationInterface;
-  // avatar?: ValidationInterface;
-  // coverImg?: ValidationInterface;
-}
+export type ValidationType = {
+  [key in PropertyName]?: ValidationInterface;
+};
