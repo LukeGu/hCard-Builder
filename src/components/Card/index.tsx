@@ -53,7 +53,10 @@ function Card({ details }: { details: DetailsType }) {
   const py = postionY >= 120 ? 120 : postionY;
 
   const stateArr = details.stateNpostcode.split(',');
-  const address = details.suite + ', ' + details.street + ', ' + stateArr[0];
+  const address =
+    details.suite && details.street && details.stateNpostcode
+      ? details.suite + ', ' + details.street + ', ' + stateArr[0]
+      : '';
 
   return (
     <Wrapper>

@@ -42,14 +42,16 @@ function App() {
     });
   };
 
-  const handleSubmitForm = (e: FormEvent) => {
+  const handleSubmitForm = (e: FormEvent, canSubmit: boolean) => {
     e.preventDefault();
-    try {
-      localStorage.setItem('profile', JSON.stringify(details));
-    } catch (e) {
-      setErrMsg(e);
+    if (canSubmit) {
+      try {
+        localStorage.setItem('profile', JSON.stringify(details));
+      } catch (e) {
+        setErrMsg(e);
+      }
+      setSuccessMsg('Congratulations! Your hCard is created.');
     }
-    setSuccessMsg('Congratulations! Your hCard is created.');
   };
 
   return (
@@ -65,7 +67,9 @@ function App() {
         onUpload={(type: string, value: string) =>
           handleUploadFiles(type, value)
         }
-        onSubmit={(e: FormEvent) => handleSubmitForm(e)}
+        onSubmit={(e: FormEvent, canSubmit: boolean) =>
+          handleSubmitForm(e, canSubmit)
+        }
       />
       {errMsg !== '' && (
         <PopUpMsg message={errMsg} onClose={() => setErrMsg('')} />
