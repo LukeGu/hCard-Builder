@@ -9,12 +9,16 @@ const Wrapper = styled.div`
   z-index: 2000;
 `;
 
-const Container = styled.div`
+type ContainerProps = {
+  color?: string;
+};
+
+const Container = styled.div<ContainerProps>`
   min-width: 10rem;
   max-width: 40rem;
   margin: 0 auto;
   padding: 1rem;
-  background-color: #f44336;
+  background-color: ${(props) => props.color || '#f44336'};
   color: white;
   border-radius: 0.3rem;
 `;
@@ -33,16 +37,21 @@ const CloseBtn = styled.span`
   }
 `;
 
-const MessageBox = (props: { message: string; onClose: () => void }) => {
+const MessageBox = (props: {
+  msgType?: string;
+  color?: string;
+  message: string;
+  onClose: () => void;
+}) => {
   setTimeout(() => {
     props.onClose();
   }, 3000);
 
   return (
     <Wrapper>
-      <Container>
+      <Container color={props.color}>
         <CloseBtn onClick={props.onClose}>&times;</CloseBtn>
-        <strong>Error: </strong> {props.message}
+        <strong>{props.msgType || 'Error'}: </strong> {props.message}
       </Container>
     </Wrapper>
   );

@@ -1,6 +1,6 @@
-import React, { ChangeEvent, FormEvent } from 'react';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
 // components
-import { SquareButton as Button } from '../index';
+import { PopUpMsg, SquareButton as Button } from '../index';
 import FormInput from '../TextInput/FormInput';
 import {
   Wrapper,
@@ -11,7 +11,9 @@ import {
   ButtonGroup,
 } from './styled';
 // types
-import { DetailsInterface } from '../types';
+import { DetailsType, ValidationType } from '../types';
+import { checkValidity } from '../../utils';
+import { defaultValidation } from './const';
 
 function Builder({
   details,
@@ -19,20 +21,15 @@ function Builder({
   onUpload,
   onSubmit,
 }: {
-  details: DetailsInterface;
+  details: DetailsType;
   onUpdate: (e: ChangeEvent) => void;
   onUpload: (type: string, value: string) => void;
   onSubmit: (e: FormEvent) => void;
 }) {
-  // const [validation, setValidation] = useState({
-  //   firstname: {
-  //     condition: { required: true },
-  //     checked: {
-  //       isValid: true,
-  //       errMsg: '',
-  //     },
-  //   },
-  // });
+  const [errMsg, setErrMsg] = useState<string>('');
+  const [validation, setValidation] = useState<ValidationType>(
+    defaultValidation
+  );
   let uploadType = '';
   const hiddenFileInput = React.useRef<HTMLInputElement>(null);
   const handleClick = (e: any, type: string) => {
@@ -46,21 +43,37 @@ function Builder({
     const files = target.files as FileList;
     const reader = new FileReader();
     let uploadedFile = '';
-    if (files) {
-      // console.log('file size', files[0].size);
+    if (files && files[0].size < 2000000) {
+      console.log('file size', files[0].size);
+
       reader.onload = () => {
         uploadedFile = reader.result as string;
         onUpload(uploadType, uploadedFile);
       };
       reader.readAsDataURL(files[0]);
+    } else {
+      setErrMsg(
+        'The image is too large to upload it! The file size limit is 2MB.'
+      );
     }
   };
 
   const handleSubmit = (e: FormEvent) => {
-    // Object.keys(details).forEach((key:string) => {
-    //   // if (details[key])
-    //   console.log(key, getProperty(details, key));
-    // });
+    let tmpValid = {};
+    Object.keys(details).forEach((key) => {
+      const curValid = validation[key as keyof DetailsType];
+      if (curValid) {
+        const curValue = details[key as keyof DetailsType];
+        tmpValid = {
+          ...tmpValid,
+          [key]: {
+            ...curValid,
+            checked: checkValidity(curValue, curValid.condition),
+          },
+        };
+      }
+    });
+    setValidation(tmpValid);
     onSubmit(e);
   };
 
@@ -71,40 +84,55 @@ function Builder({
         <Section>
           <SectionTitle>Personal details</SectionTitle>
           <FormInput
+            key='firstname'
             title='first name'
             name='firstname'
             type='string'
             value={details.firstname}
-            // validation={validation.firstname}
+            validation={validation.firstname}
             onChange={onUpdate}
           />
           <FormInput
+            key='lastname'
             title='last name'
             name='lastname'
             type='string'
             value={details.lastname}
+            validation={validation.lastname}
             onChange={onUpdate}
           />
           <FormInput
+            key='email'
             title='email'
             name='email'
             type='string'
             value={details.email}
+            validation={validation.email}
             onChange={onUpdate}
           />
           <FormInput
+            key='phone'
             title='phone number'
             name='phone'
             type='string'
             value={details.phone}
+            validation={validation.phone}
             onChange={onUpdate}
           />
 
           <ButtonGroup>
-            <Button onClick={(e: any) => handleClick(e, 'avatar')}>
+            <Button
+              key='avatar'
+              width='45%'
+              onClick={(e: any) => handleClick(e, 'avatar')}
+            >
               + Profile picture
             </Button>
-            <Button onClick={(e: any) => handleClick(e, 'coverImg')}>
+            <Button
+              key='coverImg'
+              width='45%'
+              onClick={(e: any) => handleClick(e, 'coverImg')}
+            >
               + Cover phote
             </Button>
             <input
@@ -118,6 +146,7 @@ function Builder({
         <Section>
           <SectionTitle>Address</SectionTitle>
           <FormInput
+            key='suite'
             title='suite / apt number'
             name='suite'
             type='string'
@@ -125,6 +154,7 @@ function Builder({
             onChange={onUpdate}
           />
           <FormInput
+            key='street'
             title='street number and name'
             name='street'
             type='string'
@@ -132,13 +162,16 @@ function Builder({
             onChange={onUpdate}
           />
           <FormInput
+            key='stateNpostcode'
             title='state & postcode'
             name='stateNpostcode'
             type='string'
             value={details.stateNpostcode}
+            validation={validation.stateNpostcode}
             onChange={onUpdate}
           />
           <FormInput
+            key='country'
             title='country'
             name='country'
             type='string'
@@ -150,6 +183,9 @@ function Builder({
           </Button>
         </Section>
       </Form>
+      {errMsg !== '' && (
+        <PopUpMsg message={errMsg} onClose={() => setErrMsg('')} />
+      )}
     </Wrapper>
   );
 }

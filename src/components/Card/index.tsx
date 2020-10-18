@@ -15,7 +15,7 @@ import {
   Icon,
 } from './styled';
 // types
-import { DetailsInterface } from '../types';
+import { DetailsType } from '../types';
 // assets
 import defaultAvatar from '../../assets/images/default-avatar.png';
 import emailIcon from '../../assets/images/email-icon.svg';
@@ -23,7 +23,7 @@ import phoneIcon from '../../assets/images/phone-icon.svg';
 import notificationIcon from '../../assets/images/notifications-icon.svg';
 import menuIcon from '../../assets/images/menu-icon.svg';
 
-function Card({ details }: { details: DetailsInterface }) {
+function Card({ details }: { details: DetailsType }) {
   const prevScrollY = useRef(0);
 
   const [goingUp, setGoingUp] = useState(false);
@@ -41,7 +41,6 @@ function Card({ details }: { details: DetailsInterface }) {
 
       prevScrollY.current = currentScrollY;
       setPositionY(currentScrollY);
-      // console.log('!!!!!position: ', goingUp, currentScrollY);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -52,8 +51,10 @@ function Card({ details }: { details: DetailsInterface }) {
   const zoomIn: number =
     postionY >= 120 ? 0.5 : Number(((240 - postionY) / 240).toFixed(2));
   const py = postionY >= 120 ? 120 : postionY;
-  // const isFixed = postionY >= 120;
-  console.log('!!!!!position: ', zoomIn, postionY);
+
+  const stateArr = details.stateNpostcode.split(',');
+  const address = details.suite + ', ' + details.street + ', ' + stateArr[0];
+
   return (
     <Wrapper>
       <HeadContainer>
@@ -88,11 +89,11 @@ function Card({ details }: { details: DetailsInterface }) {
         </Section>
         <Section>
           <Title>address</Title>
-          <Content>test</Content>
+          <Content>{address || '123 sample address'}</Content>
         </Section>
         <Section>
           <Title>postcode</Title>
-          <Content>{details.stateNpostcode || 'XXX 0000'}</Content>
+          <Content>{details.stateNpostcode ? stateArr[1] : 'XXX 0000'}</Content>
         </Section>
         <Section>
           <Title>country</Title>

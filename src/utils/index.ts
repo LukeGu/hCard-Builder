@@ -22,5 +22,10 @@ export const checkValidity = (
     isValid = pattern.test(value) && isValid;
     errMsg = 'Please enter numbers only.';
   }
+  if (rules.isStateNPostcode) {
+    const pattern = /^[A-Z]{2,5}\s*[,]{1}\s*\d{4,10}$/;
+    isValid = pattern.test(value) && isValid;
+    errMsg = 'Please enter the correct format, (XXX, 0000).';
+  }
   return { isValid, errMsg };
 };

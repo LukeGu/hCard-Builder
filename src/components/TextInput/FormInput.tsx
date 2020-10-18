@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Input from './index';
 import { Wrapper, Label, TextContainer, WarningMsg } from './styled';
@@ -30,6 +30,10 @@ function FormInput({
           errMsg: '',
         }
   );
+  useEffect(() => {
+    if (validation) setValid(validation.checked);
+  }, [validation]);
+
   const handleValidation = () => {
     if (validation && Object.keys(validation).length > 0)
       setValid(checkValidity(value, validation.condition));

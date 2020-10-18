@@ -75,7 +75,7 @@ export const CoverBg = styled.div<CoverProps>`
     props.bgImg ? `url(${props.bgImg})` : `url(${defaultCover})`};
   background-size: cover;
   @media screen and (max-width: 35rem) {
-    filter: ${(props) => props.postionY === 120 && 'blur(5px)'};
+    filter: ${(props) => props.postionY === 120 && 'blur(2px)'};
     background-repeat: no-repeat;
     background-size: 500px;
     height: ${(props) =>

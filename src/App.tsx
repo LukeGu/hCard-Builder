@@ -1,14 +1,14 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Builder, Card } from './components';
+import { Builder, Card, PopUpMsg } from './components';
 import './App.css';
-import { DetailsInterface } from './components/types';
+import { DetailsType } from './components/types';
 
 function App() {
   let storedData = localStorage.getItem('profile');
   const initData =
     storedData !== null
-      ? (JSON.parse(storedData) as DetailsInterface)
+      ? (JSON.parse(storedData) as DetailsType)
       : {
           firstname: '',
           lastname: '',
@@ -22,7 +22,9 @@ function App() {
           coverImg: '',
         };
 
-  const [details, setDetails] = useState<DetailsInterface>(initData);
+  const [details, setDetails] = useState<DetailsType>(initData);
+  const [errMsg, setErrMsg] = useState<string>('');
+  const [successMsg, setSuccessMsg] = useState<string>('');
 
   const handleUpdateDetails = (e: ChangeEvent) => {
     const element = e.currentTarget as HTMLInputElement;
@@ -42,7 +44,12 @@ function App() {
 
   const handleSubmitForm = (e: FormEvent) => {
     e.preventDefault();
-    // localStorage.setItem('profile', JSON.stringify(details));
+    try {
+      localStorage.setItem('profile', JSON.stringify(details));
+    } catch (e) {
+      setErrMsg(e);
+    }
+    setSuccessMsg('Congratulations! Your hCard is created.');
   };
 
   return (
@@ -60,6 +67,17 @@ function App() {
         }
         onSubmit={(e: FormEvent) => handleSubmitForm(e)}
       />
+      {errMsg !== '' && (
+        <PopUpMsg message={errMsg} onClose={() => setErrMsg('')} />
+      )}
+      {successMsg !== '' && (
+        <PopUpMsg
+          msgType='Success'
+          color='#1E90FF'
+          message={successMsg}
+          onClose={() => setSuccessMsg('')}
+        />
+      )}
     </div>
   );
 }
