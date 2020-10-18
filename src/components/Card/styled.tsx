@@ -3,6 +3,9 @@ import defaultCover from '../../assets/images/default-cover-photo.png';
 
 export const Wrapper = styled.div`
   width: 40%;
+  @media screen and (max-width: 35rem) {
+    width: 100%;
+  }
 `;
 
 export const HeadContainer = styled.div`

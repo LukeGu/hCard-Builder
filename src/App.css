@@ -25,3 +25,9 @@ body {
   max-width: 100rem;
   min-width: 20rem;
 }
+
+@media screen and (max-width: 35rem) {
+  .app-wrapper {
+    flex-direction: column;
+  }
+}
