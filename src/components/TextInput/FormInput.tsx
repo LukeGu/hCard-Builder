@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 
 import Input from './index';
 import { Wrapper, Label, TextContainer, WarningMsg } from './styled';
+import { ValidationInterface } from '../types';
+import { checkValidity } from '../../utils/index';
 
 interface FormInputInterface {
   title: string;
@@ -9,27 +11,43 @@ interface FormInputInterface {
   type: string;
   value: string;
   onChange: (e: React.ChangeEvent) => void;
+  validation?: ValidationInterface;
 }
 
-function FormInput(props: FormInputInterface) {
-  const [isShowWarning, setIsShowWarning] = useState<boolean>(false);
+function FormInput({
+  title,
+  name,
+  type,
+  value,
+  onChange,
+  validation,
+}: FormInputInterface) {
+  const [valid, setValid] = useState<{ isValid: boolean; errMsg: string }>(
+    validation
+      ? validation.checked
+      : {
+          isValid: true,
+          errMsg: '',
+        }
+  );
+  const handleValidation = () => {
+    if (validation && Object.keys(validation).length > 0)
+      setValid(checkValidity(value, validation.condition));
+  };
+
   return (
     <Wrapper>
-      <Label htmlFor={props.name}>{props.title}</Label>
+      <Label htmlFor={name}>{title}</Label>
       <TextContainer>
         <Input
-          name={props.name}
-          value={props.value}
-          type={props.type}
-          //   maxLength={10}
-          isShowWarning={isShowWarning}
-          //   onKeyDown={(e: KeyboardEvent) => handleInput(e)}
-          onChange={props.onChange}
-          //   onBlur={() => setIsShowWarning(false)}
+          name={name}
+          value={value}
+          type={type}
+          isShowWarning={!valid.isValid}
+          onChange={onChange}
+          onBlur={handleValidation}
         />
-        {isShowWarning && (
-          <WarningMsg>The text input limits 10 characters.</WarningMsg>
-        )}
+        {!valid.isValid && <WarningMsg>{valid.errMsg}</WarningMsg>}
       </TextContainer>
     </Wrapper>
   );

@@ -1,21 +1,28 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { Builder, Card } from './components';
 import './App.css';
 import { DetailsInterface } from './components/types';
 
 function App() {
-  const [details, setDetails] = useState<DetailsInterface>({
-    firstname: '',
-    lastname: '',
-    email: '',
-    phone: '',
-    suite: '',
-    street: '',
-    stateNpostcode: '',
-    country: '',
-    avatar: '',
-    coverImg: '',
-  });
+  let storedData = localStorage.getItem('profile');
+  const initData =
+    storedData !== null
+      ? (JSON.parse(storedData) as DetailsInterface)
+      : {
+          firstname: '',
+          lastname: '',
+          email: '',
+          phone: '',
+          suite: '',
+          street: '',
+          stateNpostcode: '',
+          country: '',
+          avatar: '',
+          coverImg: '',
+        };
+
+  const [details, setDetails] = useState<DetailsInterface>(initData);
+
   const handleUpdateDetails = (e: ChangeEvent) => {
     const element = e.currentTarget as HTMLInputElement;
     let newValue = element.value;
@@ -32,6 +39,11 @@ function App() {
     });
   };
 
+  const handleSubmitForm = (e: FormEvent) => {
+    e.preventDefault();
+    // localStorage.setItem('profile', JSON.stringify(details));
+  };
+
   return (
     <div className='app-wrapper'>
       <Card details={details} />
@@ -41,6 +53,7 @@ function App() {
         onUpload={(type: string, value: string) =>
           handleUploadFiles(type, value)
         }
+        onSubmit={(e: FormEvent) => handleSubmitForm(e)}
       />
     </div>
   );

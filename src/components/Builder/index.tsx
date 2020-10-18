@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, FormEvent } from 'react';
 // components
 import { SquareButton as Button } from '../index';
 import FormInput from '../TextInput/FormInput';
@@ -17,11 +17,22 @@ function Builder({
   details,
   onUpdate,
   onUpload,
+  onSubmit,
 }: {
   details: DetailsInterface;
   onUpdate: (e: ChangeEvent) => void;
   onUpload: (type: string, value: string) => void;
+  onSubmit: (e: FormEvent) => void;
 }) {
+  // const [validation, setValidation] = useState({
+  //   firstname: {
+  //     condition: { required: true },
+  //     checked: {
+  //       isValid: true,
+  //       errMsg: '',
+  //     },
+  //   },
+  // });
   let uploadType = '';
   const hiddenFileInput = React.useRef<HTMLInputElement>(null);
   const handleClick = (e: any, type: string) => {
@@ -33,23 +44,38 @@ function Builder({
   const handleUpload = (e: ChangeEvent) => {
     const target = e.target as HTMLInputElement;
     const files = target.files as FileList;
+    const reader = new FileReader();
+    let uploadedFile = '';
     if (files) {
-      const Uploadedfile = URL.createObjectURL(files[0]);
-      onUpload(uploadType, Uploadedfile);
+      // console.log('file size', files[0].size);
+      reader.onload = () => {
+        uploadedFile = reader.result as string;
+        onUpload(uploadType, uploadedFile);
+      };
+      reader.readAsDataURL(files[0]);
     }
+  };
+
+  const handleSubmit = (e: FormEvent) => {
+    // Object.keys(details).forEach((key:string) => {
+    //   // if (details[key])
+    //   console.log(key, getProperty(details, key));
+    // });
+    onSubmit(e);
   };
 
   return (
     <Wrapper>
-      <Header>profile builder</Header>
-      <Form>
+      <Header>Profile builder</Header>
+      <Form onSubmit={(e: FormEvent) => handleSubmit(e)}>
         <Section>
-          <SectionTitle>personal details</SectionTitle>
+          <SectionTitle>Personal details</SectionTitle>
           <FormInput
             title='first name'
             name='firstname'
             type='string'
             value={details.firstname}
+            // validation={validation.firstname}
             onChange={onUpdate}
           />
           <FormInput
@@ -76,10 +102,10 @@ function Builder({
 
           <ButtonGroup>
             <Button onClick={(e: any) => handleClick(e, 'avatar')}>
-              + profile picture
+              + Profile picture
             </Button>
             <Button onClick={(e: any) => handleClick(e, 'coverImg')}>
-              + cover phote
+              + Cover phote
             </Button>
             <input
               type='file'
@@ -90,7 +116,7 @@ function Builder({
           </ButtonGroup>
         </Section>
         <Section>
-          <SectionTitle>address</SectionTitle>
+          <SectionTitle>Address</SectionTitle>
           <FormInput
             title='suite / apt number'
             name='suite'
@@ -119,8 +145,8 @@ function Builder({
             value={details.country}
             onChange={onUpdate}
           />
-          <Button bgColor='#224275' color='#fff' width='100%'>
-            create profile
+          <Button type='submit' bgColor='#224275' color='#fff' width='100%'>
+            Create profile
           </Button>
         </Section>
       </Form>

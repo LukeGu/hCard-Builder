@@ -24,7 +24,7 @@ const shine = keyframes`
 const StyledButton = styled.button<ButtonProps>`
   text-decoration: none;
   font-family: 'Exo 2', sans-serif;
-  font-weight: 300;
+  font-weight: 600;
   font-size: 1rem;
   display: inline-block;
   position: relative;
