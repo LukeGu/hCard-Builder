@@ -1,5 +1,5 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Builder, Card, PopUpMsg } from './components';
 import './App.css';
 import { DetailsType } from './components/types';
@@ -55,6 +55,7 @@ function App() {
   };
 
   return (
+    <HelmetProvider>
     <div className='app-wrapper'>
       <Helmet>
         <meta charSet='utf-8' />
@@ -83,6 +84,7 @@ function App() {
         />
       )}
     </div>
+    </HelmetProvider>
   );
 }
 
